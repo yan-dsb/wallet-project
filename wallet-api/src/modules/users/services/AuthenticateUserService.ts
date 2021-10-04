@@ -3,7 +3,6 @@ import AppError from '@shared/errors/AppError';
 import { sign } from 'jsonwebtoken';
 import User from '../infra/typeorm/entities/User';
 import IHashProvider from '../providers/models/IHashProvider';
-import IUsersBalancesRepository from '../repositories/IUsersBalancesRepository';
 
 interface IRequest {
   email: string;
@@ -20,16 +19,9 @@ class AuthenticateUserService {
 
   private hashProvider: IHashProvider;
 
-  private usersBalancesRepository: IUsersBalancesRepository;
-
-  constructor(
-    usersRepository: IUsersRepository,
-    hashProvider: IHashProvider,
-    usersBalancesRepository: IUsersBalancesRepository,
-  ) {
+  constructor(usersRepository: IUsersRepository, hashProvider: IHashProvider) {
     this.usersRepository = usersRepository;
     this.hashProvider = hashProvider;
-    this.usersBalancesRepository = usersBalancesRepository;
   }
 
   async execute({ email, password }: IRequest): Promise<IResponse> {

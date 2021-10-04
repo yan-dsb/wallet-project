@@ -11,7 +11,6 @@ import Card from '../../components/Card';
 import { useToast } from '../../hooks/toast';
 import { useAuth } from '../../hooks/auth';
 import { formatter } from '../../utils/Currency';
-import { useBalance } from '../../hooks/balance';
 
 interface IUserTransactions {
   id: string;
@@ -26,7 +25,6 @@ interface IUserTransactions {
 const Transactions: React.FC = () => {
   const { signOut, user } = useAuth();
   const { addToast } = useToast();
-  const { balance } = useBalance();
   const [userTransactions, setUserTransactions] =
     useState<IUserTransactions[]>();
 
@@ -57,7 +55,7 @@ const Transactions: React.FC = () => {
       </Link>
 
       <Content>
-        <h1>Saldo Atual: {formatter.format(balance.amount)}</h1>
+        <h1>Saldo Atual: {formatter.format(user.balance.amount)}</h1>
 
         <Card>
           <h3>Histórico</h3>

@@ -4,9 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   Column,
-  ManyToOne,
-  JoinColumn,
   UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('balances')
@@ -14,11 +14,11 @@ class Balance {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar')
+  @Column('uuid')
   user_id: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'user_id' })
+  @OneToOne(() => User, user => user.balance)
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
   @Column('float8')

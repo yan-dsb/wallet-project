@@ -11,7 +11,6 @@ import { Container, Content } from './styles';
 
 import Card from '../../components/Card';
 import Input from '../../components/Input';
-import { useBalance } from '../../hooks/balance';
 import { formatter, toFloat } from '../../utils/Currency';
 import api from '../../services/api';
 import { useToast } from '../../hooks/toast';
@@ -30,7 +29,7 @@ interface UserSelectedData {
 
 const Transfer: React.FC = () => {
   const { addToast } = useToast();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
 
   const formRefSearch = useRef<FormHandles>(null);
   const formRefTransfer = useRef<FormHandles>(null);
@@ -38,7 +37,6 @@ const Transfer: React.FC = () => {
   const [userSelected, setUserSelected] = useState<UserSelectedData | null>(
     null,
   );
-  const { balance } = useBalance();
 
   const handleSearchSubmit = useCallback(
     async (data: UserSelectedData) => {
@@ -91,7 +89,7 @@ const Transfer: React.FC = () => {
           recipient_id: userSelected?.id,
           amount: toFloat(data.amount),
         });
-        balance.amount -= toFloat(data.amount);
+        user.balance.amount -= toFloat(data.amount);
         addToast({
           type: 'success',
           title: 'Transferência realizada com sucesso',
@@ -118,7 +116,7 @@ const Transfer: React.FC = () => {
         });
       }
     },
-    [signOut, addToast, userSelected, balance],
+    [signOut, addToast, userSelected, user],
   );
   return (
     <Container>
@@ -142,7 +140,7 @@ const Transfer: React.FC = () => {
               <h3>Transferindo para: {userSelected.email}</h3>
               <p>
                 Saldo disponível:{' '}
-                <strong>{formatter.format(balance.amount)}</strong>
+                <strong>{formatter.format(user.balance.amount)}</strong>
               </p>
               <p>Qual é o valor da transferência?</p>
               <Form ref={formRefTransfer} onSubmit={handleTransferSubmit}>

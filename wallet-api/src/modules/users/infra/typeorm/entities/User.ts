@@ -5,7 +5,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
 } from 'typeorm';
+import Balance from './Balance';
 
 @Entity('users')
 class User {
@@ -27,6 +29,9 @@ class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToOne(() => Balance, balance => balance.user, { eager: true })
+  balance: Balance;
 }
 
 export default User;

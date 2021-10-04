@@ -6,11 +6,14 @@ interface SignInCredentials {
   email: string;
   password: string;
 }
-
+interface BalanceData {
+  amount: number;
+}
 interface UserData {
   id: string;
   name: string;
   email: string;
+  balance: BalanceData;
 }
 
 interface AuthContextData {

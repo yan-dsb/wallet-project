@@ -3,7 +3,7 @@ import ShowUserBalanceService from '@modules/users/services/ShowUserBalanceServi
 import UsersRepository from '../../typeorm/repositories/UsersRepository';
 import UsersBalancesRepository from '../../typeorm/repositories/UsersBalancesRepository';
 
-class BalanceController {
+class BalancesController {
   async show(request: Request, response: Response): Promise<Response> {
     const { id } = request.user;
     const usersRepository = new UsersRepository();
@@ -18,4 +18,4 @@ class BalanceController {
   }
 }
 
-export default BalanceController;
+export default BalancesController;
