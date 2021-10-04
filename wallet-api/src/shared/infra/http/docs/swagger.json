@@ -1,0 +1,381 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Wallet API",
+    "description": "Essa API tem como objetivo a manipulação de carteiras digitais",
+    "contact": {
+      "email": "yandsb16@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3333",
+      "description": "API de teste"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Cadastro de usuário",
+        "description": "Essa rota será responsável para cadastrar um novo usuário",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "name": "John Doe",
+                    "email": "johndoe@notfound.com",
+                    "password": "123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A user already exists with this e-mail"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Busca de usuário por e-mail",
+        "description": "Essa rota será responsável para buscar um usuário por e-mail",
+        "tags": ["Users"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters":[
+          {
+            "name":"email",
+            "in":"query",
+            "description":"O usuário a ser buscado",
+            "required":true,
+            "type":"string"
+          }
+        ],
+        "responses": {
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "JWT token missing": {
+                    "value": {
+                      "status": 401,
+                      "type": "error",
+                      "message": "JWT token is missing"
+                    }
+                  },
+                  "Invalid JWT token": {
+                    "value": {
+                      "status": 401,
+                      "type": "error",
+                      "message": "Invalid JWT token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Must provide a e-mail address to search"
+          },
+          "404": {
+            "description": "No user found with this e-mail"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "post": {
+        "summary": "Cria a sessão do usuário",
+        "description": "Essa rota será responsável para criar uma nova sessão de um usuário",
+        "tags": ["Sessions"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Session"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "email": "johndoe@notfound.com",
+                    "password": "123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid credentials"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transactions": {
+      "get": {
+        "summary": "Lista as transações do usuário",
+        "description": "Essa rota será responsável para listar as transações de um usuário",
+        "tags": ["Transactions"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "JWT token missing": {
+                    "value": {
+                      "status": 401,
+                      "type": "error",
+                      "message": "JWT token is missing"
+                    }
+                  },
+                  "Invalid JWT token": {
+                    "value": {
+                      "status": 401,
+                      "type": "error",
+                      "message": "Invalid JWT token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Cria uma transação",
+        "description": "Essa rota será responsável para criar a transação entre usuários",
+        "tags": ["Transactions"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "recipient_id": {
+                    "type": "string",
+                    "description": "O id do usuário pra enviar a transação, pode ser buscado pelo e-mail na rota de usuários"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "description": "O valor a ser enviado"
+                  }
+                },
+                "required": ["recipient_id", "amount"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "examples": {
+                  "JWT token missing": {
+                    "value": {
+                      "status": 401,
+                      "type": "error",
+                      "message": "JWT token is missing"
+                    }
+                  },
+                  "Invalid JWT token": {
+                    "value": {
+                      "status": 401,
+                      "type": "error",
+                      "message": "Invalid JWT token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "Balance": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          }
+        }
+      },
+      "Session": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "$ref": "#/components/schemas/User"
+          },
+          "balance": {
+            "type": "object",
+            "$ref": "#/components/schemas/Balance"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "recipient_id": {
+            "type": "string"
+          },
+          "sender_id": {
+            "type": "string"
+          },
+          "sender": {
+            "type": "string"
+          },
+          "recipient": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

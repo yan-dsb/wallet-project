@@ -1,4 +1,5 @@
 import User from '@modules/users/infra/typeorm/entities/User';
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -15,6 +16,7 @@ class Balance {
   id: string;
 
   @Column('uuid')
+  @Exclude()
   user_id: string;
 
   @OneToOne(() => User, user => user.balance)
@@ -25,9 +27,11 @@ class Balance {
   amount: number;
 
   @CreateDateColumn()
+  @Exclude()
   created_at: Date;
 
   @UpdateDateColumn()
+  @Exclude()
   updated_at: Date;
 }
 
