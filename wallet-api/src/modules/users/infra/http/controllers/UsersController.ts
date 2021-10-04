@@ -34,7 +34,7 @@ class UsersController {
     const listUsersByEmail = new ListUsersByEmailService(usersRepository);
     const users = await listUsersByEmail.execute({ email: email.toString() });
 
-    // Isso poderia ser melhorado pra exibir o saldo atual do usuãrio pra quem está pesquisando
+    // Isso poderia ser melhorado pra não exibir o saldo atual do usuário pra quem está pesquisando
     delete users[0].balance;
     return response.json(classToClass(users));
   }
