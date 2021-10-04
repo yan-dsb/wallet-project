@@ -40,3 +40,7 @@
 ## Rodar o projeto
 
 - yarn start
+
+# Acessar documentação das rotas
+
+- http://localhost:3333/api-docs ou com outra porta que escolheu pra rodar o servidor
